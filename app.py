@@ -1,14 +1,22 @@
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel
 import os
+
 from inference import predict_from_base64
+
+app = FastAPI()
 
 API_KEY = os.getenv("API_KEY", "testkey123")
 
-app = FastAPI(title="AI Voice Detection API")
 
 class AudioRequest(BaseModel):
-    audio: str  # Base64 MP3
+    audio: str
+
+
+@app.get("/")
+def root():
+    return {"status": "running"}
+
 
 @app.post("/detect")
 def detect_voice(
