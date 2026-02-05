@@ -1,11 +1,7 @@
 fastapi
 uvicorn
-torch
-torchaudio
-transformers
-librosa
+pydantic
 numpy
-scikit-learn
-soundfile
-python-multipart
-joblib
+torch==2.0.1+cpu
+torchaudio==2.0.1+cpu
+--extra-index-url https://download.pytorch.org/whl/cpu
