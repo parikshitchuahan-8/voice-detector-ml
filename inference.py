@@ -1,29 +1,17 @@
-import joblib
-import numpy as np
-from audio_utils import base64_to_audio
-from utils.wav2vec import extract_embedding
+import torch
 
-clf = joblib.load("model/classifier.joblib")
+_model = None
 
-def predict_from_base64(base64_audio):
-    audio = base64_to_audio(base64_audio)
-    emb = extract_embedding(audio).reshape(1, -1)
+def get_model():
+    global _model
+    if _model is None:
+        _model = load_model()      # jo bhi tumhara model load hai
+        _model.to("cpu")
+        _model.eval()
+    return _model
 
-    prob = clf.predict_proba(emb)[0]
-    pred = np.argmax(prob)
-
-    label = "AI_GENERATED" if pred == 1 else "HUMAN"
-    confidence = float(prob[pred])
-
-    # Simple explainability
-    reason = (
-        "Unnaturally smooth spectral patterns detected"
-        if label == "AI_GENERATED"
-        else "Natural pitch and spectral variation detected"
-    )
-
-    return {
-        "label": label,
-        "confidence": round(confidence, 3),
-        "reason": reason
-    }
+def predict_from_base64(audio_b64):
+    model = get_model()
+    with torch.no_grad():
+        # inference logic
+        return {"label": "AI", "confidence": 0.82}
